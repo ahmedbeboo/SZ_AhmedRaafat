@@ -165,6 +165,7 @@ namespace Net_AhmedRaafat
             }
             catch (Exception ex)
             {
+                // -------------------------------
                 // I'm using Serilog here, but use the logging solution of your choice.
                 throw ex;
 
