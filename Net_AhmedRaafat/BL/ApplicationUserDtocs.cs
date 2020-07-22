@@ -25,5 +25,8 @@ namespace Net_AhmedRaafat.BL
         public string PhoneNumber { get; set; }
         [JsonProperty("isDeleted")]
         public bool isDeleted { get; set; }
+
+        [JsonProperty("token")]
+        public string Token { get; set; }
     }
 }

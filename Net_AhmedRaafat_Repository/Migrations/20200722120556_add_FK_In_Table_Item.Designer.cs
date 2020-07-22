@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Net_AhmedRaafat_Repository;
 
 namespace Net_AhmedRaafat_Repository.Migrations
 {
     [DbContext(typeof(SQLContext))]
-    partial class SQLContextModelSnapshot : ModelSnapshot
+    [Migration("20200722120556_add_FK_In_Table_Item")]
+    partial class add_FK_In_Table_Item
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -213,8 +215,6 @@ namespace Net_AhmedRaafat_Repository.Migrations
                     b.Property<DateTime>("CreatedDate");
 
                     b.Property<DateTime>("UpdatedDate");
-
-                    b.Property<bool>("isNotifiedTimeOver");
 
                     b.Property<string>("picturesUrl");
 

@@ -80,7 +80,7 @@ namespace Net_AhmedRaafat.Manager
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return false;
             }

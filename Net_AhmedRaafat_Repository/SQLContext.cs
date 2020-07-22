@@ -23,7 +23,9 @@ namespace Net_AhmedRaafat_Repository
         }
 
 
-        
+        public DbSet<PersonalDiary> PersonalDiaries { get; set; }
+        public DbSet<ToDo> ToDo { get; set; }
+
     }
 
 }

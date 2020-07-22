@@ -19,7 +19,7 @@ namespace Net_AhmedRaafat_Entities
         public BaseEntity()
         {
             Id = Guid.NewGuid();
-            CreatedDate = DateTime.Now;
+            //CreatedDate = DateTime.Now;
 
         }
     }

@@ -24,7 +24,7 @@ namespace Net_AhmedRaafat.Manager
 
                 dynamic item = JsonConvert.DeserializeObject(json);
 
-                Token = item.Keys.Token;
+                Token = item.Keys.Secret;
                 ConnectionString = item.DatabaseSettings.ConnectionString;
                 ApiUrl = item.URLs.ApiUrl;
                 SiteUrl = item.URLs.siteUrl;

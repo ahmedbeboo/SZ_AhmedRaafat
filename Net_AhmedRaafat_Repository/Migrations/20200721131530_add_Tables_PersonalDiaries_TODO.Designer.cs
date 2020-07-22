@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Net_AhmedRaafat_Repository;
 
 namespace Net_AhmedRaafat_Repository.Migrations
 {
     [DbContext(typeof(SQLContext))]
-    partial class SQLContextModelSnapshot : ModelSnapshot
+    [Migration("20200721131530_add_Tables_PersonalDiaries_TODO")]
+    partial class add_Tables_PersonalDiaries_TODO
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -196,11 +198,7 @@ namespace Net_AhmedRaafat_Repository.Migrations
 
                     b.Property<string>("text");
 
-                    b.Property<Guid>("userId");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("userId");
 
                     b.ToTable("PersonalDiaries");
                 });
@@ -214,17 +212,11 @@ namespace Net_AhmedRaafat_Repository.Migrations
 
                     b.Property<DateTime>("UpdatedDate");
 
-                    b.Property<bool>("isNotifiedTimeOver");
-
                     b.Property<string>("picturesUrl");
 
                     b.Property<string>("text");
 
-                    b.Property<Guid>("userId");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("userId");
 
                     b.ToTable("ToDo");
                 });
@@ -271,22 +263,6 @@ namespace Net_AhmedRaafat_Repository.Migrations
                     b.HasOne("Net_AhmedRaafat_Entities.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Net_AhmedRaafat_Entities.PersonalDiary", b =>
-                {
-                    b.HasOne("Net_AhmedRaafat_Entities.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("userId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Net_AhmedRaafat_Entities.ToDo", b =>
-                {
-                    b.HasOne("Net_AhmedRaafat_Entities.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

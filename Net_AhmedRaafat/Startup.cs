@@ -19,6 +19,9 @@ using Net_AhmedRaafat.Manager;
 using Net_AhmedRaafat_Repository;
 using Net_AhmedRaafat_Entities;
 using Net_AhmedRaafat.BL;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
+using Net_AhmedRaafat.BackgroundService;
 
 namespace Net_AhmedRaafat
 {
@@ -62,6 +65,9 @@ namespace Net_AhmedRaafat
             services.AddOptions();
 
             services.AddScoped<IBaseRepository<ApplicationUserDtocs>, SQLRepository<ApplicationUserDtocs>>();
+            services.AddScoped<IBaseRepository<PersonalDiary>, SQLRepository<PersonalDiary>>();
+            services.AddScoped<IBaseRepository<ToDo>, SQLRepository<ToDo>>();
+
 
             services.AddSingleton<IEmailSender, EmailSender>();
 
@@ -128,6 +134,11 @@ namespace Net_AhmedRaafat
 
             });
 
+            // backGround service
+            // not used anymore
+            services.AddSingleton<Microsoft.Extensions.Hosting.IHostedService, EmailTask>();
+
+
             services.AddMvc();
 
             services.AddAutoMapper(typeof(Startup));
@@ -147,6 +158,11 @@ namespace Net_AhmedRaafat
                 .AllowAnyMethod());
 
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider=new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),@"wwwroot")),
+                RequestPath=new PathString("/Uploads")
+            });
 
             app.UseCookiePolicy();
 

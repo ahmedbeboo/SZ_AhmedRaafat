@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Net_AhmedRaafat.BL;
@@ -23,6 +26,8 @@ namespace Net_AhmedRaafat.Controllers
         private static HttpClient client;
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+
         private readonly IEmailSender _emailSender;
 
         private readonly ProfileManager _profileManager;
@@ -30,16 +35,17 @@ namespace Net_AhmedRaafat.Controllers
         private ConfigurationsManager _configurationsManager;
 
 
-        public ProfileController(IBaseRepository<ApplicationUserDtocs> profileRepository, IMapper mapper, UserManager<ApplicationUser> userManager, IEmailSender emailSender)
+        public ProfileController(IBaseRepository<ApplicationUserDtocs> profileRepository, IMapper mapper, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSender emailSender)
         {
 
             _configurationsManager = new ConfigurationsManager();
             _emailSender = emailSender;
             _mapper = mapper;
             _userManager = userManager;
+            _signInManager = signInManager;
             //_profileManager = profileManager;
             _profileRepository = profileRepository;
-            _profileManager = new ProfileManager(_profileRepository, _mapper, _userManager);
+            _profileManager = new ProfileManager(_profileRepository, _mapper, _userManager, _signInManager);
 
         }
 
@@ -76,15 +82,32 @@ namespace Net_AhmedRaafat.Controllers
             return NotFound();
         }
 
+        [AllowAnonymous]
+        [HttpPost("login")]
+        public IActionResult Login([FromBody]LoginModel loginModel)
+        {
+            var user = _profileManager.Login(loginModel);
+
+            if (user != null)
+                return Ok(user);
+
+            return NotFound();
+
+        }
+
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> CreateNewUser([FromBody]ApplicationUserDtocs userModel)
         {
             var res = await _profileManager.InsertUser(userModel);
+            registerResult registerResult = new registerResult();
+            registerResult.success = res;
 
             if (res)
             {
-                var url= _configurationsManager.ApiUrl;
-                string htmlString = $"<html> <body> Please confirm your account by <a href='{HtmlEncoder.Default.Encode(url+"confirmMail/" + userModel.Id)}'>clicking here</a>.</body> </html>";
+                registerResult.token = _profileManager.GetAuthToken(userModel, userModel.PasswordHash);
+                var url = _configurationsManager.ApiUrl;
+                string htmlString = $"<html> <body> Please confirm your account by <a href='{HtmlEncoder.Default.Encode(url + "confirmMail/" + userModel.Id)}'>clicking here</a>.</body> </html>";
 
 
                 var result = _emailSender.SendEmail("confirm your mail", htmlString, "beboofathi@gmail.com", "Ahmed Raafat", userModel.Email, userModel.firstName + " " + userModel.lastName,
@@ -92,7 +115,7 @@ namespace Net_AhmedRaafat.Controllers
                                         null, 0, null
                                         );
             }
-            
+
 
             return Ok(res);
         }
@@ -102,11 +125,11 @@ namespace Net_AhmedRaafat.Controllers
         [Route("~/confirmMail/{id}")]
         public async Task<IActionResult> ConfirmMail(Guid id)
         {
-            
-            var res =await _profileManager.confirmMail(id);
 
-            if(res)
-              return Redirect(_configurationsManager.redirectAfterConfirmMail);
+            var res = await _profileManager.confirmMail(id);
+
+            if (res)
+                return Redirect(_configurationsManager.redirectAfterConfirmMail);
 
             return Redirect(_configurationsManager.SiteUrl);
         }
@@ -115,7 +138,7 @@ namespace Net_AhmedRaafat.Controllers
         public IActionResult SendConfirmAgain(Guid id)
         {
             var userModel = _profileManager.GetUserByID(id);
-            if(userModel != null)
+            if (userModel != null)
             {
                 var url = _configurationsManager.ApiUrl;
                 string htmlString = $"<html> <body> Please confirm your account by <a href='{HtmlEncoder.Default.Encode(url + "confirmMail/" + userModel.Id)}'>clicking here</a>.</body> </html>";
@@ -145,6 +168,7 @@ namespace Net_AhmedRaafat.Controllers
             return NotFound();
         }
 
-        
+
+
     }
 }
