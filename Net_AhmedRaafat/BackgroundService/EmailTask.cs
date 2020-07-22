@@ -75,7 +75,7 @@ namespace Net_AhmedRaafat.BackgroundService
                 var _emailSender = scope.ServiceProvider.GetService<IEmailSender>();
                 var _userManager = scope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
 
-                var OverTimeToDO = _toDoRepository.Where(i => i.CreatedDate > DateTime.Now && ! i.isNotifiedTimeOver).Result.ToList();
+                var OverTimeToDO = _toDoRepository.Where(i => i.CreatedDate < DateTime.Now && ! i.isNotifiedTimeOver).Result.ToList();
                 foreach (var item in OverTimeToDO)
                 {
                     var userModel = _userManager.Users.Where(i => i.Id == item.userId && !i.isDeleted).FirstOrDefault();
