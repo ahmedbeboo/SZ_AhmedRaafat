@@ -27,7 +27,7 @@ namespace Net_AhmedRaafat.Manager
         {
             try
             {
-                var res = _personalDiaryRepository.GetAll().Result.Where(p=>p.userId== userId).ToList();
+                var res = _personalDiaryRepository.GetAll().Result.Where(p=>p.userId== userId).OrderByDescending(p=>p.CreatedDate).ToList();
 
                 if (res != null && res.Count > 0)
                     return res;
@@ -61,7 +61,7 @@ namespace Net_AhmedRaafat.Manager
         public bool InsertDiary(PersonalDiary personalDiary)
         {
             personalDiary.Id = Guid.NewGuid();
-            personalDiary.CreatedDate = DateTime.Now;
+            //personalDiary.CreatedDate = DateTime.Now;
 
             try
             {
@@ -97,7 +97,7 @@ namespace Net_AhmedRaafat.Manager
         {
             try
             {
-                var res = _toDoRepository.GetAll().Result.Where(p => p.userId == userId).ToList();
+                var res = _toDoRepository.GetAll().Result.Where(p => p.userId == userId).OrderByDescending(p => p.CreatedDate).ToList();
 
                 if (res != null && res.Count > 0)
                     return res;
@@ -131,7 +131,7 @@ namespace Net_AhmedRaafat.Manager
         public bool InsertToDo(ToDo toDo)
         {
             toDo.Id = Guid.NewGuid();
-            toDo.CreatedDate = DateTime.Now;
+            //toDo.CreatedDate = DateTime.Now;
 
             try
             {
