@@ -112,7 +112,9 @@ namespace Net_AhmedRaafat.Controllers
             if (res)
             {
                 registerResult.token = _profileManager.GetAuthToken(userModel, userModel.PasswordHash);
-                registerResult.id = userModel.Id;    
+                registerResult.id = userModel.Id;
+                registerResult.firstName = userModel.firstName;
+                registerResult.lastName = userModel.lastName;
             }
 
 
