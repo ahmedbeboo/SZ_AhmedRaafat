@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 
 namespace Net_AhmedRaafat.Controllers
 {
+    //[Authorize]
     [Route("api/FileUpload")]
     public class FileUploadController : Controller
     {

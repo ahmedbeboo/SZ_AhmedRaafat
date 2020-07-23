@@ -99,6 +99,12 @@ namespace Net_AhmedRaafat.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateNewUser([FromBody]ApplicationUserDtocs userModel)
         {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
             var res = await _profileManager.InsertUser(userModel);
             registerResult registerResult = new registerResult();
             registerResult.success = res;
@@ -106,18 +112,11 @@ namespace Net_AhmedRaafat.Controllers
             if (res)
             {
                 registerResult.token = _profileManager.GetAuthToken(userModel, userModel.PasswordHash);
-                var url = _configurationsManager.ApiUrl;
-                string htmlString = $"<html> <body> Please confirm your account by <a href='{HtmlEncoder.Default.Encode(url + "confirmMail/" + userModel.Id)}'>clicking here</a>.</body> </html>";
-
-
-                var result = _emailSender.SendEmail("confirm your mail", htmlString, "beboofathi@gmail.com", "Ahmed Raafat", userModel.Email, userModel.firstName + " " + userModel.lastName,
-                                        null, null, null, null, null,
-                                        null, 0, null
-                                        );
+                registerResult.id = userModel.Id;    
             }
 
 
-            return Ok(res);
+            return Ok(registerResult);
         }
 
 
@@ -160,6 +159,11 @@ namespace Net_AhmedRaafat.Controllers
         [HttpPut("{id}")]
         public IActionResult EditUser(Guid id, [FromBody]ApplicationUserDtocs userInfo)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
             var res = _profileManager.UpdateProfile(id, userInfo);
 
             if (res.Result)

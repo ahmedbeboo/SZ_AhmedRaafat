@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
@@ -7,8 +8,9 @@ namespace Net_AhmedRaafat_Entities
 {
     public abstract class Item:BaseEntity
     {
-        
+        [Required]
         public string text { get; set; }
+
 
         public string picturesUrl { get; set; }
 

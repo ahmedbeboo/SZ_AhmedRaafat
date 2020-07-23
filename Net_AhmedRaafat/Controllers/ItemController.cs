@@ -18,7 +18,6 @@ namespace Net_AhmedRaafat.Controllers
         private readonly IMapper _mapper;
 
 
-        private ConfigurationsManager _configurationsManager;
         private readonly ItemManager _itemManager;
 
         public ItemController(IBaseRepository<PersonalDiary> personalDiaryRepository, IBaseRepository<ToDo> toDoRepository, IMapper mapper)
@@ -33,6 +32,10 @@ namespace Net_AhmedRaafat.Controllers
         [HttpPost("AddItem/{isDiary}")]
         public IActionResult AddItem([FromBody]PersonalDiary item, bool isDiary)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
 
             if (isDiary)
             {
@@ -75,6 +78,10 @@ namespace Net_AhmedRaafat.Controllers
         [HttpPut("editItem/{id}/{isDiary}")]
         public IActionResult EditItem([FromBody]PersonalDiary item, Guid id, bool isDiary)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
 
             if (isDiary)
             {
@@ -198,7 +205,6 @@ namespace Net_AhmedRaafat.Controllers
 
         }
 
-        [AllowAnonymous]
         [HttpGet("GetAllPaging/{page}/{userId}/{isDiary?}")]
         public IActionResult GetAllPagging(int page,Guid userId, bool isDiary = true)
         {
