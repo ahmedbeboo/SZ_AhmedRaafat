@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Net_AhmedRaafat.BL;
@@ -17,13 +19,16 @@ namespace Net_AhmedRaafat.BackgroundService
         private readonly CancellationTokenSource _stoppingCts = new CancellationTokenSource();
 
         private readonly IServiceScopeFactory _serviceScopeFactory;
-       
+        IHubContext<NotifyHub, ITypedHubClient> _hubContext;
+        private IHttpContextAccessor _httpContextAccessor;
 
 
 
-        public EmailTask(IServiceScopeFactory serviceScopeFactory)
+
+        public EmailTask(IServiceScopeFactory serviceScopeFactory, IHubContext<NotifyHub, ITypedHubClient> hubContext, IHttpContextAccessor httpContextAccessor)
         {
-            
+            _httpContextAccessor = httpContextAccessor;
+            _hubContext = hubContext;
             _serviceScopeFactory = serviceScopeFactory;
         }
         public Task StartAsync(CancellationToken cancellationToken)
@@ -70,7 +75,6 @@ namespace Net_AhmedRaafat.BackgroundService
         {
             using (var scope = _serviceScopeFactory.CreateScope())
             {
-
                 var _toDoRepository = scope.ServiceProvider.GetService<IBaseRepository<ToDo>>();
                 var _emailSender = scope.ServiceProvider.GetService<IEmailSender>();
                 var _userManager = scope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
@@ -92,6 +96,21 @@ namespace Net_AhmedRaafat.BackgroundService
                         entity.Id = item.Id;
                         entity.isNotifiedTimeOver = true;
                         _toDoRepository.Update(entity);
+                    }
+
+
+
+                    try
+                    {
+                        string msg = "Your ToDo note with text:[" + item.text + " ] ... has a time over";
+                        var user = _httpContextAccessor.HttpContext.Request.HttpContext.User.Identity.Name;
+
+                        //await _hubContext.Clients.All.BroadcastMessage("Time Over", msg);
+                        await _hubContext.Clients.User(user).BroadcastMessage("Time Over", msg);
+
+                    }
+                    catch (Exception e)
+                    {
                     }
 
                     await Task.Delay(2500); //0.25 seconds delay

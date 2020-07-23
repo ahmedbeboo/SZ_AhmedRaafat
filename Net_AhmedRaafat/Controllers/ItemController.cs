@@ -209,12 +209,13 @@ namespace Net_AhmedRaafat.Controllers
         public IActionResult GetAllPagging(int page,Guid userId, bool isDiary = true)
         {
 
+            int pageSize = 12;
             if (isDiary)
             {
                 try
                 {
                     
-                    var diaries = _itemManager.GetPersonalDiaryPagging(page, 12, userId);
+                    var diaries = _itemManager.GetPersonalDiaryPagging(page, pageSize, userId);
 
                     return Ok(diaries);
 
@@ -229,7 +230,7 @@ namespace Net_AhmedRaafat.Controllers
             {
                 try
                 {
-                    var toDO = _itemManager.GetToDoPagging(page, 12, userId);
+                    var toDO = _itemManager.GetToDoPagging(page, pageSize, userId);
                     return Ok(toDO);
 
                 }

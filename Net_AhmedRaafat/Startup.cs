@@ -141,6 +141,19 @@ namespace Net_AhmedRaafat
 
             services.AddMvc();
 
+            services.AddCors(o => o.AddPolicy("CorsPolicy", builder => {
+                builder
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()
+                .WithOrigins("http://localhost:4200");
+            }));
+
+            services.AddSignalR();
+
+            services.AddSignalR();
+
+
             services.AddAutoMapper(typeof(Startup));
 
         }
@@ -152,10 +165,8 @@ namespace Net_AhmedRaafat
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseCors(builder => builder.WithOrigins("http://localhost:4200")
-                .AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod());
+            app.UseCors("CorsPolicy");
+
 
             app.UseStaticFiles();
             app.UseStaticFiles(new StaticFileOptions()
@@ -167,6 +178,11 @@ namespace Net_AhmedRaafat
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<NotifyHub>("/notify");
+            });
 
             app.UseMvc();
 

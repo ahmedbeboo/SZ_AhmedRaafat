@@ -97,7 +97,7 @@ namespace Net_AhmedRaafat.Manager
             {
                 Count = countDetails,
                 PageIndex = page,
-                PageSize = 12,
+                PageSize = pagesize,
                 Items = _personalDiaryRepository.Where(i => i.userId == userId).Result.OrderByDescending(i => i.CreatedDate).Skip((page - 1) * pagesize).Take(pagesize).ToList()
             };
             return result;
@@ -180,7 +180,7 @@ namespace Net_AhmedRaafat.Manager
             {
                 Count = countDetails,
                 PageIndex = page,
-                PageSize = 12,
+                PageSize = pagesize,
                 Items = _toDoRepository.Where(i => i.userId == userId).Result.OrderByDescending(i=>i.CreatedDate).Skip((page - 1) * pagesize).Take(pagesize).ToList()
             };
             return result;
