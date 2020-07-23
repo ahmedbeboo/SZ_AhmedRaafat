@@ -1,4 +1,5 @@
-﻿using Net_AhmedRaafat_Entities;
+﻿using Net_AhmedRaafat.BL;
+using Net_AhmedRaafat_Entities;
 using Net_AhmedRaafat_Repository;
 using System;
 using System.Collections.Generic;
@@ -89,7 +90,19 @@ namespace Net_AhmedRaafat.Manager
             }
         }
 
-        
+        public PageResult<PersonalDiary> GetPersonalDiaryPagging(int page, int pagesize, Guid userId)
+        {
+            var countDetails = _personalDiaryRepository.GetCount();
+            var result = new PageResult<PersonalDiary>
+            {
+                Count = countDetails,
+                PageIndex = page,
+                PageSize = 12,
+                Items = _personalDiaryRepository.Where(i => i.userId == userId).Result.OrderByDescending(i => i.CreatedDate).Skip((page - 1) * pagesize).Take(pagesize).ToList()
+            };
+            return result;
+        }
+
 
         //ToDo Operations 
 
@@ -157,6 +170,20 @@ namespace Net_AhmedRaafat.Manager
             {
                 return false;
             }
+        }
+
+
+        public PageResult<ToDo> GetToDoPagging(int page, int pagesize,Guid userId)
+        {
+            var countDetails = _toDoRepository.GetCount();
+            var result = new PageResult<ToDo>
+            {
+                Count = countDetails,
+                PageIndex = page,
+                PageSize = 12,
+                Items = _toDoRepository.Where(i => i.userId == userId).Result.OrderByDescending(i=>i.CreatedDate).Skip((page - 1) * pagesize).Take(pagesize).ToList()
+            };
+            return result;
         }
 
     }

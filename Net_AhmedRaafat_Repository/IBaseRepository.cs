@@ -9,6 +9,10 @@ namespace Net_AhmedRaafat_Repository
 {
     public interface IBaseRepository<T> where T : IBaseEntity
     {
+        int GetCount();
+        Task<List<T>> GetAllSkipTake(int pageSize, int page);
+
+
         Task<List<T>> GetAll();
         Task<T> GetById(object Id);
 

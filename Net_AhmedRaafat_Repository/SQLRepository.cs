@@ -22,6 +22,16 @@ namespace Net_AhmedRaafat_Repository
             _context = context;
             _entity = context.Set<T>();
         }
+        public int GetCount()
+        {
+            return  _entity.Count();
+        }
+
+        public async Task<List<T>> GetAllSkipTake(int pageSize, int page)
+        {
+            return await _entity.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        }
+
         public async Task<List<T>> GetAll()
         {
             return await _entity.ToListAsync();

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Net_AhmedRaafat.BL;
 using Net_AhmedRaafat.Manager;
 using Net_AhmedRaafat_Entities;
 using Net_AhmedRaafat_Repository;
@@ -196,5 +197,43 @@ namespace Net_AhmedRaafat.Controllers
             }
 
         }
+
+        [AllowAnonymous]
+        [HttpGet("GetAllPaging/{page}/{userId}/{isDiary?}")]
+        public IActionResult GetAllPagging(int page,Guid userId, bool isDiary = true)
+        {
+
+            if (isDiary)
+            {
+                try
+                {
+                    
+                    var diaries = _itemManager.GetPersonalDiaryPagging(page, 12, userId);
+
+                    return Ok(diaries);
+
+                }
+                catch
+                {
+                    return NotFound();
+                }
+
+            }
+            else
+            {
+                try
+                {
+                    var toDO = _itemManager.GetToDoPagging(page, 12, userId);
+                    return Ok(toDO);
+
+                }
+                catch
+                {
+                    return NotFound();
+                }
+            }
+
+        }
+
     }
 }
